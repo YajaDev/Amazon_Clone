@@ -1,57 +1,60 @@
+import {cart} from "../data/cart.js";
+import {products} from "../data/products.js";
+
 let productHtml = '';
 
 products.forEach(product => {
-    const html = `
-        <div class="product-container">
-            <div class="product-image-container">
-            <img class="product-image"
-                src="${product.image}">
-            </div>
+  const html = `
+    <div class="product-container">
+      <div class="product-image-container">
+        <img class="product-image"
+        src="${product.image}">
+      </div>
 
-            <div class="product-name limit-text-to-2-lines">
-            ${product.name}
-            </div>
+      <div class="product-name limit-text-to-2-lines">
+        ${product.name}
+      </div>
 
-            <div class="product-rating-container">
-            <img class="product-rating-stars"
-                src="images/ratings/rating-${product.rating.stars * 10}.png">
-            <div class="product-rating-count link-primary">
-                ${product.rating.count}
-            </div>
-            </div>
-
-            <div class="product-price">
-            $${(product.priceCents / 100).toFixed(2)}
-            </div>
-
-            <div class="product-quantity-container">
-            <select>
-                <option selected value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-            </select>
-            </div>
-
-            <div class="product-spacer"></div>
-
-            <div class="added-to-cart">
-            <img src="images/icons/checkmark.png">
-            Added
-            </div>
-
-            <button class="add-to-cart-button button-primary" data-product-id="${product.id}">
-            Add to Cart
-            </button>
+      <div class="product-rating-container">
+        <img class="product-rating-stars"
+        src="images/ratings/rating-${product.rating.stars * 10}.png">
+        <div class="product-rating-count link-primary">
+          ${product.rating.count}
         </div>
-    `;
-    productHtml += html;
+      </div>
+
+      <div class="product-price">
+        $${(product.priceCents / 100).toFixed(2)}
+      </div>
+
+      <div class="product-quantity-container">
+        <select id="quantity-selector-${product.id}">
+          <option selected value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+
+      <div class="product-spacer"></div>
+
+      <div class="added-to-cart">
+        <img src="images/icons/checkmark.png">
+        Added
+      </div>
+
+      <button class="add-to-cart-button button-primary" data-product-id="${product.id}">
+        Add to Cart
+      </button>
+    </div>
+  `;
+  productHtml += html;
 });
 
 // display product to html 
@@ -59,33 +62,33 @@ document.querySelector('.products-grid').innerHTML = productHtml;
 
 // add to cart buttons EventListener
 document.querySelectorAll('.add-to-cart-button').forEach(button => {
-    button.addEventListener('click', () => {
 
-        const productId = button.dataset.productId;
-        let matchingItem;
-        
-        cart.forEach((item) => {
-            if (productId === item.productId) {
-                matchingItem = item;
-            } 
-        })
+  button.addEventListener('click', () => {
+    const productId = button.dataset.productId;
+    const selectorQuantity = Number(document.querySelector(`#quantity-selector-${productId}`).value);
+    let matchingItem;
+    
+    cart.forEach((item) => {
+        if (productId === item.productId) {
+            matchingItem = item;
+        } 
+    })
 
-        if (matchingItem) {
-            matchingItem.quantity += 1;
-        } else {
-            cart.push({
-                productId,
-                quantity: 1
-            });
-        }
+    if (matchingItem) {
+        matchingItem.quantity += selectorQuantity;
+    } else {
+        cart.push({
+            productId,
+            quantity: selectorQuantity
+        });
+    }
 
-        // cart quantity on header display 
-        let cartQuantity = 0;
+    // cart quantity on header display 
+    let cartQuantity = 0;
 
-        cart.forEach((item) => {
-            cartQuantity += item.quantity
-        })
-
-        document.querySelector('.cart-quantity').innerText = cartQuantity;
-    });
+    cart.forEach((item) => {
+        cartQuantity += item.quantity
+    })
+    document.querySelector('.cart-quantity').innerText = cartQuantity; 
+  });
 });

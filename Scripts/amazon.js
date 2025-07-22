@@ -57,8 +57,9 @@ products.forEach(product => {
   `;
   productHtml += html;
 });
-// display product to html 
+// display product and cart quantity to html
 document.querySelector('.products-grid').innerHTML = productHtml;
+UpdateAddQuantity();
 
 function UpdateAddQuantity() {
   let cartQuantity = 0;

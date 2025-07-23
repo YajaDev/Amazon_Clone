@@ -2,7 +2,7 @@ import {cart,removeFromCart} from "../data/cart.js";
 import {products} from "../data/products.js";
 import {centToDollar} from "./utils/money.js";
 
-let carSummaryHtml = '';
+let cartSummaryHtml = '';
 
 cart.forEach((cartItem) => {
   const productId = cartItem.productId;
@@ -93,9 +93,9 @@ cart.forEach((cartItem) => {
       </div>
     </div>
   `
-  carSummaryHtml += html;
+  cartSummaryHtml += html;
 });
-document.querySelector('.order-summary').innerHTML = carSummaryHtml;
+document.querySelector('.order-summary').innerHTML = cartSummaryHtml;
 
 document.querySelectorAll('.delete-quantity-link')
   .forEach((deleteLinkBtn) => {
@@ -103,12 +103,9 @@ document.querySelectorAll('.delete-quantity-link')
     deleteLinkBtn.addEventListener('click', () => {
 
       const productId = deleteLinkBtn.dataset.deleteLinkId;
-      
       removeFromCart(productId);
-
+    
       const container = document.getElementById(`id-${productId}`);
-      console.log(container);
-      
       container.remove();
     });
-  });
+  });  

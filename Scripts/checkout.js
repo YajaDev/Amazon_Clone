@@ -5,6 +5,8 @@ import {
   updateCartQuantity} from "../data/cart.js";
 import {products} from "../data/products.js";
 import {centToDollar} from "./utils/money.js";
+import deliveryOptions from "../data/deliveryOptions.js";
+import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 
 let cartSummaryHtml = '';
 
@@ -20,10 +22,14 @@ cart.forEach((cartItem) => {
     }
   });
 
+  const deliveryOpionId = Number(cartItem.deliveryOpionId);
+  const deliveryOpion = deliveryOptions[deliveryOpionId];
+  const deliveryDate = dayjs().add(deliveryOpion.deliveryDays, 'day').format('dddd, MMMM D')
+  
   const html =`
     <div class="cart-item-container" id="id-${cartItem.productId}">
       <div class="delivery-date">
-        Delivery date: Tuesday, June 21
+        Delivery date: ${deliveryDate}
       </div>
 
       <div class="cart-item-details-grid">
@@ -56,45 +62,7 @@ cart.forEach((cartItem) => {
           <div class="delivery-options-title">
             Choose a delivery option:
           </div>
-          <div class="delivery-option">
-            <input type="radio" checked
-              class="delivery-option-input"
-              name="delivery-option-${machingProduct.id}">
-            <div>
-              <div class="delivery-option-date">
-                Tuesday, June 21
-              </div>
-              <div class="delivery-option-price">
-                FREE Shipping
-              </div>
-            </div>
-          </div>
-          <div class="delivery-option">
-            <input type="radio"
-              class="delivery-option-input"
-              name="delivery-option-${machingProduct.id}">
-            <div>
-              <div class="delivery-option-date">
-                Wednesday, June 15
-              </div>
-              <div class="delivery-option-price">
-                $4.99 - Shipping
-              </div>
-            </div>
-          </div>
-          <div class="delivery-option">
-            <input type="radio"
-              class="delivery-option-input"
-              name="delivery-option-${machingProduct.id}">
-            <div>
-              <div class="delivery-option-date">
-                Monday, June 13
-              </div>
-              <div class="delivery-option-price">
-                $9.99 - Shipping
-              </div>
-            </div>
-          </div>
+            ${deliveryOptionHtml(machingProduct, cartItem)}
         </div>
       </div>
     </div>
@@ -103,6 +71,37 @@ cart.forEach((cartItem) => {
 });
 document.querySelector('.order-summary').innerHTML = cartSummaryHtml;
 UpdateCheckoutQuantity();
+
+function deliveryOptionHtml(machingProduct,cartItem) {
+  let deliveryOptionsHtml = '';
+
+  deliveryOptions.forEach(option => {
+    const todayObj = dayjs();
+    const deliveryDaysObj = todayObj.add(option.deliveryDays, 'day');
+    const deliveryDate = deliveryDaysObj.format('dddd, MMMM D');
+    const ShippingFee = !option.priceCents ? 'FREE' : `$${centToDollar(option.priceCents)}`
+    const ischeck = option.id === cartItem.deliveryOpionId;
+
+    deliveryOptionsHtml += `
+      <div class="delivery-option">
+        <input type="radio"
+          class="delivery-option-input"
+          name="delivery-option-${machingProduct.id}" 
+          ${ischeck && 'checked'}>
+        <div>
+          <div class="delivery-option-date">
+            ${deliveryDate}
+          </div>
+          <div class="delivery-option-price">
+            ${ShippingFee} - Shipping
+          </div>
+        </div>
+      </div>
+      `
+  });
+
+  return deliveryOptionsHtml;
+}
 
 function UpdateCheckoutQuantity() {
   let cartQuantity = calculateCartQuantity();

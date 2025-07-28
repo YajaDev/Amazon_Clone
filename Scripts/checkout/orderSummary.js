@@ -4,9 +4,10 @@ import {
   removeFromCart,
   calculateCartQuantity,
   updateCartQuantity} from "../../data/cart.js";
-import {products} from "../../data/products.js";
+import {getMatchingItem} from "../../data/products.js";
 import {centToDollar} from "../utils/money.js";
 import deliveryOptions from "../../data/deliveryOptions.js";
+import renderPaymentSummary from "./paymentSummary.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
 
 function renderOrderSummary() {
@@ -15,14 +16,7 @@ function renderOrderSummary() {
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
     
-    let machingProduct = {};
-
-    products.forEach((product) => {
-
-      if (product.id === productId) {
-        machingProduct = product;
-      }
-    });
+    const machingProduct = getMatchingItem(productId);
 
     const deliveryOpionId = Number(cartItem.deliveryOpionId);
     const deliveryOpion = deliveryOptions[deliveryOpionId];
@@ -131,6 +125,7 @@ function renderOrderSummary() {
         container.remove();
 
         UpdateCheckoutQuantity();
+        renderPaymentSummary();
       });
     });
 
@@ -159,6 +154,7 @@ function renderOrderSummary() {
         document.getElementById(`quantity-label-${productId}`).innerText = newQuantity;
         document.getElementById(`id-${productId}`)
           .classList.remove('is-editing-quality');
+        renderPaymentSummary();
       });
     })
 
@@ -170,6 +166,7 @@ function renderOrderSummary() {
     
         updateDeliveryOption(productId, deliveryOption);
         renderOrderSummary();
+        renderPaymentSummary();
       })
     })
 }

@@ -34,7 +34,16 @@ export function addToCart(productId) {
     });
   }
     
-  saveToLocalSrorage()
+  saveToLocalSrorage();
+}
+
+export function updateDeliveryOption(productId, deliveryOpion) {
+  cart.forEach(cartItem => {
+    if (productId === cartItem.productId) {
+      cartItem.deliveryOpionId = deliveryOpion;
+      saveToLocalSrorage();
+    };
+  });
 }
 
 export function removeFromCart(productId) {

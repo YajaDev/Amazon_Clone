@@ -37,7 +37,7 @@ function renderOrderSummary() {
               ${machingProduct.name}
             </div>
             <div class="product-price">
-              $${centToDollar(machingProduct.priceCents)}
+              $${machingProduct.getPrice()}
             </div>
             <div class="product-quantity">
               <span>

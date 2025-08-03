@@ -1,28 +1,34 @@
 import {
-  cart,
   updateDeliveryOption,
   removeFromCart,
   calculateCartQuantity,
-  updateCartQuantity} from "../../data/cart.js";
-import {getMatchingItem} from "../../data/products.js";
-import {centToDollar} from "../utils/money.js";
+  updateCartQuantity,
+} from "../../data/cart.js";
+import { getMatchingItem } from "../../data/products.js";
+import { centToDollar } from "../utils/money.js";
 import deliveryOptions from "../../data/deliveryOptions.js";
 import renderPaymentSummary from "./paymentSummary.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
+import Cart from "../../data/cart-class.js";
 
 function renderOrderSummary() {
-  let cartSummaryHtml = '';
+  // create an Cart object
+  const cart = new Cart("cart");
 
-  cart.forEach((cartItem) => {
+  let cartSummaryHtml = "";
+
+  cart.cartItems.forEach((cartItem) => {
     const productId = cartItem.productId;
-    
+
     const machingProduct = getMatchingItem(productId);
 
     const deliveryOpionId = Number(cartItem.deliveryOpionId);
     const deliveryOpion = deliveryOptions[deliveryOpionId];
-    const deliveryDate = dayjs().add(deliveryOpion.deliveryDays, 'day').format('dddd, MMMM D')
-    
-    const html =`
+    const deliveryDate = dayjs()
+      .add(deliveryOpion.deliveryDays, "day")
+      .format("dddd, MMMM D");
+
+    const html = `
       <div class="cart-item-container" id="id-${cartItem.productId}">
         <div class="delivery-date">
           Delivery date: ${deliveryDate}
@@ -37,18 +43,28 @@ function renderOrderSummary() {
               ${machingProduct.name}
             </div>
             <div class="product-price">
-              $${machingProduct.getPrice()}
+              ${machingProduct.getPrice()}
             </div>
             <div class="product-quantity">
               <span>
-                Quantity: <span class="quantity-label" id="quantity-label-${cartItem.productId}">${cartItem.quantity}</span>
+                Quantity: <span class="quantity-label" id="quantity-label-${
+                  cartItem.productId
+                }">${cartItem.quantity}</span>
               </span>
-              <span class="update-quantity-link link-primary" data-update-link-id="${cartItem.productId}">
+              <span class="update-quantity-link link-primary" data-update-link-id="${
+                cartItem.productId
+              }">
                 Update
               </span>
-              <input class="quantity-input" id="quantity-input-${cartItem.productId}">
-              <span class="save-quantity-link link-primary" data-save-link-id="${cartItem.productId}">Save</span>
-              <span class="delete-quantity-link link-primary" data-delete-link-id="${cartItem.productId}">
+              <input class="quantity-input" id="quantity-input-${
+                cartItem.productId
+              }">
+              <span class="save-quantity-link link-primary" data-save-link-id="${
+                cartItem.productId
+              }">Save</span>
+              <span class="delete-quantity-link link-primary" data-delete-link-id="${
+                cartItem.productId
+              }">
                 Delete
               </span>
             </div>
@@ -62,21 +78,23 @@ function renderOrderSummary() {
           </div>
         </div>
       </div>
-    `
-  cartSummaryHtml += html;
+    `;
+    cartSummaryHtml += html;
   });
-  
-  document.querySelector('.order-summary').innerHTML = cartSummaryHtml;
+
+  document.querySelector(".order-summary").innerHTML = cartSummaryHtml;
   UpdateCheckoutQuantity();
 
-  function deliveryOptionHtml(machingProduct,cartItem) {
-    let deliveryOptionsHtml = '';
+  function deliveryOptionHtml(machingProduct, cartItem) {
+    let deliveryOptionsHtml = "";
 
-    deliveryOptions.forEach(option => {
+    deliveryOptions.forEach((option) => {
       const todayObj = dayjs();
-      const deliveryDaysObj = todayObj.add(option.deliveryDays, 'day');
-      const deliveryDate = deliveryDaysObj.format('dddd, MMMM D');
-      const ShippingFee = !option.priceCents ? 'FREE' : `$${centToDollar(option.priceCents)}`
+      const deliveryDaysObj = todayObj.add(option.deliveryDays, "day");
+      const deliveryDate = deliveryDaysObj.format("dddd, MMMM D");
+      const ShippingFee = !option.priceCents
+        ? "FREE"
+        : `$${centToDollar(option.priceCents)}`;
       const ischeck = option.id === cartItem.deliveryOpionId;
 
       deliveryOptionsHtml += `
@@ -86,7 +104,7 @@ function renderOrderSummary() {
           <input type="radio"
             class="delivery-option-input"
             name="delivery-option-${machingProduct.id}" 
-            ${ischeck && 'checked'}>
+            ${ischeck && "checked"}>
           <div>
             <div class="delivery-option-date">
               ${deliveryDate}
@@ -96,7 +114,7 @@ function renderOrderSummary() {
             </div>
           </div>
         </label>
-        `
+        `;
     });
 
     return deliveryOptionsHtml;
@@ -104,23 +122,22 @@ function renderOrderSummary() {
 
   function UpdateCheckoutQuantity() {
     let cartQuantity = calculateCartQuantity();
-    
-    let display = '';
+
+    let display = "";
     if (cartQuantity) {
-      cartQuantity === 1 ? display =  ' item': display =  ' items';
-    } else cartQuantity = '';
-    document.querySelector('.cart-quantity').innerText = (cartQuantity + display);
+      cartQuantity === 1 ? (display = " item") : (display = " items");
+    } else cartQuantity = "";
+    document.querySelector(".cart-quantity").innerText = cartQuantity + display;
   }
 
   // delete link button
-  document.querySelectorAll('.delete-quantity-link')
+  document
+    .querySelectorAll(".delete-quantity-link")
     .forEach((deleteLinkBtn) => {
-
-      deleteLinkBtn.addEventListener('click', () => {
-
+      deleteLinkBtn.addEventListener("click", () => {
         const productId = deleteLinkBtn.dataset.deleteLinkId;
         removeFromCart(productId);
-      
+
         const container = document.getElementById(`id-${productId}`);
         container.remove();
 
@@ -130,45 +147,47 @@ function renderOrderSummary() {
     });
 
   // update link button
-  document.querySelectorAll('.update-quantity-link')
-    .forEach(updateLinkBtn => {
-      updateLinkBtn.addEventListener('click', () => {
-
+  document
+    .querySelectorAll(".update-quantity-link")
+    .forEach((updateLinkBtn) => {
+      updateLinkBtn.addEventListener("click", () => {
         const productId = updateLinkBtn.dataset.updateLinkId;
-        document.getElementById(`id-${productId}`).classList.add('is-editing-quality');
-        
+        document
+          .getElementById(`id-${productId}`)
+          .classList.add("is-editing-quality");
       });
     });
 
-  document.querySelectorAll('.save-quantity-link')
-    .forEach(saveLinkBtn => {
-      saveLinkBtn.addEventListener('click',() => {
-        const productId = saveLinkBtn.dataset.saveLinkId;
-        const newQuantity = Number(document.getElementById(`quantity-input-${productId}`).value);
-        if (newQuantity <= 0 || newQuantity >= 1000) {
-          alert('Quantity must be a number between 1 and 999')
-          return;
-        }
-        updateCartQuantity(productId, newQuantity);
-        UpdateCheckoutQuantity();
-        document.getElementById(`quantity-label-${productId}`).innerText = newQuantity;
-        document.getElementById(`id-${productId}`)
-          .classList.remove('is-editing-quality');
-        renderPaymentSummary();
-      });
-    })
+  document.querySelectorAll(".save-quantity-link").forEach((saveLinkBtn) => {
+    saveLinkBtn.addEventListener("click", () => {
+      const productId = saveLinkBtn.dataset.saveLinkId;
+      const newQuantity = Number(
+        document.getElementById(`quantity-input-${productId}`).value
+      );
+      if (newQuantity <= 0 || newQuantity >= 1000) {
+        alert("Quantity must be a number between 1 and 999");
+        return;
+      }
+      updateCartQuantity(productId, newQuantity);
+      UpdateCheckoutQuantity();
+      document.getElementById(`quantity-label-${productId}`).innerText =
+        newQuantity;
+      document
+        .getElementById(`id-${productId}`)
+        .classList.remove("is-editing-quality");
+      renderPaymentSummary();
+    });
+  });
 
-  document.querySelectorAll('.delivery-option')
-    .forEach(element => {
-      element.addEventListener('change',() => {
-        
-        const {productId, deliveryOption} = element.dataset;
-    
-        updateDeliveryOption(productId, deliveryOption);
-        renderOrderSummary();
-        renderPaymentSummary();
-      })
-    })
+  document.querySelectorAll(".delivery-option").forEach((element) => {
+    element.addEventListener("change", () => {
+      const { productId, deliveryOption } = element.dataset;
+
+      updateDeliveryOption(productId, deliveryOption);
+      renderOrderSummary();
+      renderPaymentSummary();
+    });
+  });
 }
 
 export default renderOrderSummary;

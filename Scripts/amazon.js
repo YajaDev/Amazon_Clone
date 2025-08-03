@@ -1,9 +1,9 @@
-import {addToCart,calculateCartQuantity} from "../data/cart.js";
-import {products} from "../data/products.js";
+import { addToCart, calculateCartQuantity } from "../data/cart.js";
+import { products } from "../data/products.js";
 
-let productHtml = '';
+let productHtml = "";
 
-products.forEach(product => {
+products.forEach((product) => {
   const html = `
     <div class="product-container">
       <div class="product-image-container">
@@ -42,6 +42,8 @@ products.forEach(product => {
         </select>
       </div>
       ${product.renderSizeChartLink()}
+      ${product.renderInstructionLink()}
+      ${product.renderWarrantyLink()}
       <div class="product-spacer"></div>
 
       <div class="added-to-cart">
@@ -49,7 +51,9 @@ products.forEach(product => {
         Added
       </div>
 
-      <button class="add-to-cart-button button-primary" data-product-id="${product.id}">
+      <button class="add-to-cart-button button-primary" data-product-id="${
+        product.id
+      }">
         Add to Cart
       </button>
     </div>
@@ -57,17 +61,17 @@ products.forEach(product => {
   productHtml += html;
 });
 // display product and cart quantity to html
-document.querySelector('.products-grid').innerHTML = productHtml;
+document.querySelector(".products-grid").innerHTML = productHtml;
 UpdateCartQuantity();
 
 function UpdateCartQuantity() {
   const cartQuantity = calculateCartQuantity();
-  document.querySelector('.cart-quantity').innerText = cartQuantity || '';
+  document.querySelector(".cart-quantity").innerText = cartQuantity || "";
 }
 
 // add to cart buttons EventListener
-document.querySelectorAll('.add-to-cart-button').forEach(button => {
-  button.addEventListener('click', () => {
+document.querySelectorAll(".add-to-cart-button").forEach((button) => {
+  button.addEventListener("click", () => {
     const productId = button.dataset.productId;
     addToCart(productId);
     UpdateCartQuantity();

@@ -764,3 +764,65 @@ export const products = [
 
   return new Product(productDetails);
 });
+
+/*
+  Date class builtIn
+  const date = new Date();
+  console.log(date);
+  console.log(date.toDateString());
+*/
+
+/*
+  // Check if its created of Clothing class
+  console.log(products[2] instanceof Clothing );
+*/
+
+// console.log(this);
+
+/*
+  const obj = {
+    a: 2,
+    b: this.a
+  }
+  console.log(obj);
+*/
+
+/*
+  const logThisOnj = {
+    a: 3,
+    s: 'bleh',
+  logThis() {
+    console.log(this);
+  }}
+  logThisOnj.logThis()
+*/
+
+/*
+  function logThis() {
+    console.log(this);
+  }
+  logThis()
+  // call method run the function and give this a value
+  logThis.call('ajay')
+*/
+
+/*
+  const obj = {
+    thisIs: 'point to object',
+    method() {
+      console.log(this);
+
+      const array = [1,2];
+      // this point to object outside the arrow function
+      array.forEach(() => {
+        console.log(this);
+        
+      })
+      // this is undefined if it's inside the normal function
+      array.forEach(function callBack() {
+        console.log(this);
+      })
+    }
+  }
+  obj.method();
+*/

@@ -73,3 +73,14 @@ export function calculateCartQuantity() {
     matchingItem.quantity = newQuantity;
     saveToLocalSrorage();
   }
+
+  export function loadCart(callBack) {
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', () => {
+      console.log(xhr.response);
+      
+      callBack();
+    })
+    xhr.open('GET', 'https://supersimplebackend.dev/cart')
+    xhr.send();
+  }

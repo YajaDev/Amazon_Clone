@@ -625,6 +625,37 @@ export const products = [
 });
 */
 
+export function loadProductsFetch() {
+  const promise = fetch("https://supersimplebackend.dev/products")
+    .then((response) => {
+      return response.json();
+    })
+
+    .then((productDetails) => {
+      products = productDetails.map((productDetail) => {
+        if (productDetail.type === "clothing") {
+          return new Clothing(productDetail);
+        }
+
+        if (
+          productDetail.keywords.find((keyword) => keyword === "appliances")
+        ) {
+          return new Appliances(productDetail);
+        }
+
+        return new Product(productDetail);
+      });
+    });
+  return promise;
+}
+
+/*
+// if you return into a then it will became a property to next them 
+loadProductsFetch().then((products) => {
+  console.log(products);
+});
+*/
+
 export let products = [];
 
 export function loadProducts(callback) {

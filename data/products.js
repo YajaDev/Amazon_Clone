@@ -645,7 +645,9 @@ export function loadProductsFetch() {
 
         return new Product(productDetail);
       });
-    });
+    })/*.catch((error) => {
+      console.log(error);
+    })*/
   return promise;
 }
 

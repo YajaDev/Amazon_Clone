@@ -1,25 +1,21 @@
 import renderOrderSummary from "./checkout/orderSummary.js";
 import renderPaymentSummary from "./checkout/paymentSummary.js";
 import { loadProductsFetch } from "../data/products.js";
-import { loadCart } from "../data/cart.js";
+import { loadCart, loadCartFetch } from "../data/cart.js";
 //import '../data/cart-class.js';
 //import "../backend/backend-practice.js";
 
 async function loadPage() {
-  try {
-    await loadProductsFetch();
-
-    await new Promise((resolve) => {
-      loadCart(() => {
-        resolve();
-      });
-    });
+  await Promise.all([
+    loadProductsFetch(),
+    loadCartFetch()
+  ])
+  .then(()=> {
     renderOrderSummary();
     renderPaymentSummary();
-  } catch (error) {
+  }).catch(error => {
     alert(error);
-    
-  }
+  });
 }
 
 loadPage();

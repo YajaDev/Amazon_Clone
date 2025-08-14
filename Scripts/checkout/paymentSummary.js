@@ -1,4 +1,4 @@
-import { cart, calculateCartQuantity } from "../../data/cart.js";
+import { cart, calculateCartQuantity, clearCart } from "../../data/cart.js";
 import { centToDollar } from "../utils/money.js";
 import { getMatchingItem } from "../../data/products.js";
 import { addOrder, orders } from "../../data/orders.js";
@@ -72,22 +72,34 @@ export function renderPaymentSummary() {
   document
     .querySelector(".place-order-button")
     .addEventListener("click", async () => {
-      try {
-        const response = await fetch("https://supersimplebackend.dev/orders", {
-          method: "POST",
-          headers: {
-            "content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cart: cart,
-          }),
-        });
+      if (cart.length) {
+        try {
+          const response = await fetch(
+            "https://supersimplebackend.dev/orders",
+            {
+              method: "POST",
+              headers: {
+                "content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                cart: cart,
+              }),
+            }
+          );
 
-        const order = await response.json();
+          const order = await response.json();
 
-        addOrder(order);
-      } catch (error) {
-        alert(error)
+          addOrder(order);
+          clearCart();
+
+          window.location.href = "tracking.html";
+        } catch (error) {
+          alert(error);
+        }
+      } else {
+        alert(`Cart is Empty!!!
+          \nPlease add item to cart first.
+          \nThank You.`)
       }
     });
 }

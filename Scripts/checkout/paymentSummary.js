@@ -92,7 +92,7 @@ export function renderPaymentSummary() {
           addOrder(order);
           clearCart();
 
-          window.location.href = "tracking.html";
+          window.location.href = "orders.html";
         } catch (error) {
           alert(error);
         }

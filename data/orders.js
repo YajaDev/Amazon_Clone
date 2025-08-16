@@ -8,3 +8,7 @@ export function addOrder(order) {
 function saveToLocalSrorage() {
   localStorage.setItem('orders', JSON.stringify(orders));
 }
+
+export function getOrder(orderId) {
+  return orders.find(order => order.id === orderId);
+}

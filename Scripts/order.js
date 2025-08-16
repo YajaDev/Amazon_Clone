@@ -1,4 +1,4 @@
-import { cart, calculateCartQuantity } from "../data/cart.js";
+import { cart, calculateCartQuantity, addToCart } from "../data/cart.js";
 import { orders } from "../data/orders.js";
 import { getMatchingItem, loadProductsFetch } from "../data/products.js";
 import dayjs from "https://esm.sh/dayjs";
@@ -10,12 +10,9 @@ async function loadPage() {
   // load products
   await loadProductsFetch();
 
-  // Display cartQuantity
-  const cartQuantity = calculateCartQuantity();
-
-  if (cartQuantity) {
-    document.querySelector(".cart-quantity").innerText = cartQuantity;
-  }
+  // Calculate cartQuantity and display to cart icon
+  updateCartQuantityDisplay()
+  
   //console.log(orders);
 
   let ordersSumarry = "";
@@ -46,7 +43,7 @@ async function loadPage() {
             <div>${order.id}</div>
           </div>
         </div>
-        ${renderProductSummary(order.products)}
+        ${renderProductSummary(order)}
       </div>
     `;
   });
@@ -54,11 +51,14 @@ async function loadPage() {
   // Display the generated html
   document.querySelector('.orders-grid').innerHTML = ordersSumarry;
 
-  function renderProductSummary(products) {
+  function renderProductSummary(order) {
+    const {products, id} = order;
+    
     let html = "";
 
     products.forEach((product) => {
-      const productDetails = getMatchingItem(product.productId);
+      const productId = product.productId;
+      const productDetails = getMatchingItem(productId);
       const {image, name} = productDetails
       const deliveryDate = dayjs(product.estimatedDeliveryTime).format("MMMM D")
       html += 
@@ -78,14 +78,14 @@ async function loadPage() {
             <div class="product-quantity">
               Quantity: ${product.quantity}
             </div>
-            <button class="buy-again-button button-primary">
+            <button class="buy-again-button button-primary" data-buy-again-btn="${product.productId}">
               <img class="buy-again-icon" src="images/icons/buy-again.png">
               <span class="buy-again-message">Buy it again</span>
             </button>
           </div>
 
           <div class="product-actions">
-            <a href="tracking.html">
+            <a href="tracking.html?orderId=${id}&productId=${productId}">
               <button class="track-package-button button-secondary">
                 Track package
               </button>
@@ -96,5 +96,33 @@ async function loadPage() {
     });
 
     return html;
+  }
+
+  // buy again buttons
+  document.querySelectorAll('.buy-again-button')
+    .forEach (button => {
+
+      button.addEventListener('click', () => {
+        const productId = button.dataset.buyAgainBtn;
+
+        addToCart(productId);
+        updateCartQuantityDisplay();
+
+        button.innerHTML = 'Added';
+        setTimeout(() => {
+          button.innerHTML = `
+            <img class="buy-again-icon" src="images/icons/buy-again.png">
+            <span class="buy-again-message">Buy it again</span>
+          `;
+        },500)
+      })
+    })
+
+  // Calculate cartQuantity and display to cart icon
+  function updateCartQuantityDisplay() {
+    const cartQuantity = calculateCartQuantity();
+    if (cartQuantity) {
+      document.querySelector(".cart-quantity").innerText = cartQuantity;
+    } 
   }
 }

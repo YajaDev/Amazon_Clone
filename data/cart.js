@@ -20,9 +20,17 @@ function saveToLocalSrorage() {
 
 export function addToCart(productId) {
   let matchingItem;
-  const selectorQuantity = Number(
+
+  let selectorQuantity = 1;
+
+  // check if quantity selector have value
+  try {
+    selectorQuantity = Number(
     document.querySelector(`#quantity-selector-${productId}`).value
-  );
+  ); 
+  } catch (error) {
+    console.log('quantity set to default (1)');
+  }
 
   cart.forEach((cartItem) => {
     if (productId === cartItem.productId) {

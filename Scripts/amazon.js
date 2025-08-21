@@ -55,12 +55,12 @@ item.forEach((product) => {
       ${product.renderWarrantyLink()}
       <div class="product-spacer"></div>
 
-      <div class="added-to-cart">
+      <div class="added-to-cart id-${product.id}">
         <img src="images/icons/checkmark.png">
         Added
       </div>
 
-      <button class="add-to-cart-button button-primary id-${product.id}" data-product-id="${
+      <button class="add-to-cart-button button-primary" data-product-id="${
         product.id
       }">
         Add to Cart
@@ -80,10 +80,24 @@ function UpdateCartQuantity() {
 
 // add to cart buttons EventListener
 document.querySelectorAll(".add-to-cart-button").forEach((button) => {
+  let timeoutId; 
+  
   button.addEventListener("click", () => {
     const productId = button.dataset.productId;
     addToCart(productId);
     UpdateCartQuantity();
+
+    const addedElement = document.querySelector(`.id-${productId}`);
+ 
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+    }
+
+    addedElement.classList.add('is-added-to-cart');
+
+    timeoutId = setTimeout(() => {
+      addedElement.classList.remove('is-added-to-cart')
+    },2000);     
   });
 });
 

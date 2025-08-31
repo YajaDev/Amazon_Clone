@@ -43,6 +43,11 @@
   margin-bottom: 15px;
 }
 
+.progress-percent{
+  font-size: 20px;
+  text-align: center;
+}
+
 .current-status {
   color: rgb(6, 125, 98);
 }

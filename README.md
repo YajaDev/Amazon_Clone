@@ -1,12 +1,12 @@
 # JavaScript Amazon Clone – Interactive (In Progress)
 
 **Forked from [SuperSimpleDev/javascript-amazon-project](https://github.com/SuperSimpleDev/javascript-amazon-project).**  
-This is a work-in-progress fork focused on adding interactivity, modular structure, and real-world features to the original Amazon-style frontend project.
+This fork focused on adding interactivity, modular structure, and real-world features to the original Amazon-style frontend project.
 
 ## 🔧 Currently Working On
 - Improving interactivity with real-time updates
 - Refactoring code into modular files
-- Enhancing UI/UX with better DOM updates and feedback
+- Enhancing DOM updates and feedback
 - Expanding cart and checkout functionality
 
 ## ✅ Features Added So Far

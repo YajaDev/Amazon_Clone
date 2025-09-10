@@ -3,6 +3,7 @@ import { orders } from "../data/orders.js";
 import { getMatchingItem, loadProductsFetch } from "../data/products.js";
 import dayjs from "https://esm.sh/dayjs";
 import { centToDollar } from "./utils/money.js";
+import { search } from "./utils/search.js";
 
 loadPage();
 
@@ -125,4 +126,15 @@ async function loadPage() {
       document.querySelector(".cart-quantity").innerText = cartQuantity;
     } 
   }
+
+  // search button
+  document.querySelector('.search-button').addEventListener('click', () => {
+    search();
+  });
+  
+  document.querySelector('.search-bar').addEventListener('keydown', (event) => {  
+    if (event.key === "Enter") {
+      search();
+    }
+  });
 }

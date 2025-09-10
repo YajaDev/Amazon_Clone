@@ -2,6 +2,7 @@ import { calculateCartQuantity } from "../data/cart.js";
 import { getMatchingItem, loadProductsFetch } from "../data/products.js";
 import { getOrder } from "../data/orders.js";
 import { progressPercent } from "./utils/time.js";
+import { search } from "./utils/search.js";
 import dayjs from "https://esm.run/dayjs";
 
 loadPage();
@@ -95,3 +96,13 @@ async function loadPage() {
   document.querySelector('.progress-percent').innerText = `${progressPercentBar}%`;
   barElement.style.width = `${progressPercentBar < 5 ? 5 :progressPercentBar}%`
 }
+// search button
+document.querySelector('.search-button').addEventListener('click', () => {
+  search();
+});
+
+document.querySelector('.search-bar').addEventListener('keydown', (event) => {  
+  if (event.key === "Enter") {
+    search();
+  }
+});

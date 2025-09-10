@@ -6,6 +6,7 @@ class Product {
   name;
   rating;
   priceCents;
+  keywords;
 
   constructor(productDetails) {
     this.id = productDetails.id;
@@ -13,6 +14,7 @@ class Product {
     this.name = productDetails.name;
     this.rating = productDetails.rating;
     this.priceCents = productDetails.priceCents;
+    this.keywords = productDetails.keywords
   }
 
   getStarUrl() {
@@ -124,7 +126,7 @@ class Appliances extends Product {
 export function getMatchingItem(productId) {
   let machingProduct;
 
-  products.forEach((product) => {
+  BackendProducts.forEach((product) => {
     if (product.id === productId) {
       machingProduct = product;
     }
@@ -132,7 +134,7 @@ export function getMatchingItem(productId) {
   return machingProduct;
 }
 
-/*
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -623,7 +625,13 @@ export const products = [
 
   return new Product(productDetails);
 });
-*/
+
+export function searchProduct (search) {
+  search = search.toLowerCase();
+  return products.filter(product => {
+    return product.name.toLowerCase().includes(search) || product.keywords.includes(search)
+  })
+}
 
 export function loadProductsFetch() {
   const promise = fetch("https://supersimplebackend.dev/products")
@@ -632,7 +640,7 @@ export function loadProductsFetch() {
     })
 
     .then((productDetails) => {
-      products = productDetails.map((productDetail) => {
+      BackendProducts  = productDetails.map((productDetail) => {
         if (productDetail.type === "clothing") {
           return new Clothing(productDetail);
         }
@@ -658,13 +666,13 @@ loadProductsFetch().then((products) => {
 });
 */
 
-export let products = [];
+export let BackendProducts  = [];
 
 export function loadProducts(callback) {
   const xhr = new XMLHttpRequest();
 
   xhr.addEventListener("load", () => {
-    products = JSON.parse(xhr.response).map((productDetails) => {
+    BackendProducts = JSON.parse(xhr.response).map((productDetails) => {
       if (productDetails.type === "clothing") {
         return new Clothing(productDetails);
       }
